@@ -1,0 +1,56 @@
+{
+  "name": "Assassin Male",
+  "class": "Assassin",
+  "gender": "Male",
+  "sprite_path": "res://assets/sprites/assassins/male_assassin.png",
+  "stats": {
+    "max_health": 85,
+    "max_mana": 90,
+    "move_speed": 240,
+    "dash_speed": 550,
+    "jump_force": 420,
+    "attack_damage": 12,
+    "heavy_attack_damage": 22,
+    "magic_damage": 18,
+    "crit_chance": 0.25,
+    "crit_multiplier": 1.8
+  },
+  "abilities": {
+    "quick_attack": {
+      "name": "Shadow Strike",
+      "damage": 12,
+      "cooldown": 0.4,
+      "animation": "quick_attack"
+    },
+    "heavy_attack": {
+      "name": "Backstab",
+      "damage": 22,
+      "cooldown": 0.85,
+      "animation": "heavy_attack"
+    },
+    "magic_attack": {
+      "name": "Poison Dart",
+      "damage": 18,
+      "mana_cost": 16,
+      "cooldown": 0.6,
+      "animation": "magic_attack"
+    },
+    "ultimate": {
+      "name": "Lethal Combo",
+      "damage": 75,
+      "animation": "ultimate"
+    }
+  },
+  "weapon": {
+    "name": "Daggers",
+    "type": "dagger",
+    "sprite": "res://assets/sprites/weapons/daggers.png"
+  },
+  "armor": {
+    "name": "Leather Armor",
+    "defense_bonus": 0.9,
+    "sprite": "res://assets/sprites/armor/assassin_armor.png"
+  },
+  "voice_pack": "res://assets/audio/voices/assassin_male/",
+  "ultimate_vfx": "res://assets/particles/ultimate_assassin.tscn"
+}

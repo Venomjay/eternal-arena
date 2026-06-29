@@ -1,0 +1,56 @@
+{
+  "name": "Knight Female",
+  "class": "Knight",
+  "gender": "Female",
+  "sprite_path": "res://assets/sprites/knights/female_knight.png",
+  "stats": {
+    "max_health": 110,
+    "max_mana": 70,
+    "move_speed": 190,
+    "dash_speed": 470,
+    "jump_force": 400,
+    "attack_damage": 14,
+    "heavy_attack_damage": 26,
+    "magic_damage": 12,
+    "crit_chance": 0.12,
+    "crit_multiplier": 1.4
+  },
+  "abilities": {
+    "quick_attack": {
+      "name": "Swift Strike",
+      "damage": 14,
+      "cooldown": 0.45,
+      "animation": "quick_attack"
+    },
+    "heavy_attack": {
+      "name": "Spinning Blade",
+      "damage": 26,
+      "cooldown": 0.95,
+      "animation": "heavy_attack"
+    },
+    "magic_attack": {
+      "name": "Holy Light",
+      "damage": 12,
+      "mana_cost": 18,
+      "cooldown": 0.65,
+      "animation": "magic_attack"
+    },
+    "ultimate": {
+      "name": "Radiant Fury",
+      "damage": 80,
+      "animation": "ultimate"
+    }
+  },
+  "weapon": {
+    "name": "Arming Sword",
+    "type": "sword",
+    "sprite": "res://assets/sprites/weapons/arming_sword.png"
+  },
+  "armor": {
+    "name": "Knight Plate Armor",
+    "defense_bonus": 1.1,
+    "sprite": "res://assets/sprites/armor/knight_armor_female.png"
+  },
+  "voice_pack": "res://assets/audio/voices/knight_female/",
+  "ultimate_vfx": "res://assets/particles/ultimate_knight_female.tscn"
+}

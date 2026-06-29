@@ -1,0 +1,56 @@
+{
+  "name": "Mage Female",
+  "class": "Mage",
+  "gender": "Female",
+  "sprite_path": "res://assets/sprites/mages/female_mage.png",
+  "stats": {
+    "max_health": 70,
+    "max_mana": 160,
+    "move_speed": 170,
+    "dash_speed": 420,
+    "jump_force": 390,
+    "attack_damage": 7,
+    "heavy_attack_damage": 14,
+    "magic_damage": 28,
+    "crit_chance": 0.18,
+    "crit_multiplier": 2.1
+  },
+  "abilities": {
+    "quick_attack": {
+      "name": "Frost Bolt",
+      "damage": 7,
+      "cooldown": 0.48,
+      "animation": "quick_attack"
+    },
+    "heavy_attack": {
+      "name": "Blizzard",
+      "damage": 14,
+      "cooldown": 1.15,
+      "animation": "heavy_attack"
+    },
+    "magic_attack": {
+      "name": "Ice Spike",
+      "damage": 28,
+      "mana_cost": 27,
+      "cooldown": 0.75,
+      "animation": "magic_attack"
+    },
+    "ultimate": {
+      "name": "Absolute Zero",
+      "damage": 95,
+      "animation": "ultimate"
+    }
+  },
+  "weapon": {
+    "name": "Crystal Staff",
+    "type": "staff",
+    "sprite": "res://assets/sprites/weapons/crystal_staff.png"
+  },
+  "armor": {
+    "name": "Mage Robes",
+    "defense_bonus": 0.8,
+    "sprite": "res://assets/sprites/armor/mage_robes_female.png"
+  },
+  "voice_pack": "res://assets/audio/voices/mage_female/",
+  "ultimate_vfx": "res://assets/particles/ultimate_mage_female.tscn"
+}

@@ -1,0 +1,35 @@
+{
+  "name": "Forest Ruins",
+  "description": "Ancient ruins overgrown with magical flora",
+  "background_path": "res://assets/sprites/arenas/forest_ruins_bg.png",
+  "parallax_layers": [
+    {
+      "path": "res://assets/sprites/arenas/forest_ruins_bg_far.png",
+      "speed": 0.3
+    },
+    {
+      "path": "res://assets/sprites/arenas/forest_ruins_bg_mid.png",
+      "speed": 0.6
+    },
+    {
+      "path": "res://assets/sprites/arenas/forest_ruins_bg_near.png",
+      "speed": 0.9
+    }
+  ],
+  "floor_height": 800,
+  "arena_width": 1920,
+  "lighting": {
+    "ambient_color": "#2D5016",
+    "ambient_intensity": 0.65
+  },
+  "particles": {
+    "dust_particles": "res://assets/particles/forest_leaves.tscn",
+    "enabled": true
+  },
+  "music": "res://assets/audio/music/forest_ruins.ogg",
+  "ambient_sounds": [
+    "res://assets/audio/ambient/forest_breeze.ogg",
+    "res://assets/audio/ambient/forest_birds.ogg"
+  ],
+  "difficulty": "normal"
+}

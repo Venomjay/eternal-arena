@@ -1,0 +1,56 @@
+{
+  "name": "Mage Male",
+  "class": "Mage",
+  "gender": "Male",
+  "sprite_path": "res://assets/sprites/mages/male_mage.png",
+  "stats": {
+    "max_health": 75,
+    "max_mana": 150,
+    "move_speed": 160,
+    "dash_speed": 400,
+    "jump_force": 380,
+    "attack_damage": 8,
+    "heavy_attack_damage": 16,
+    "magic_damage": 25,
+    "crit_chance": 0.15,
+    "crit_multiplier": 2.0
+  },
+  "abilities": {
+    "quick_attack": {
+      "name": "Arcane Bolt",
+      "damage": 8,
+      "cooldown": 0.5,
+      "animation": "quick_attack"
+    },
+    "heavy_attack": {
+      "name": "Fireball",
+      "damage": 16,
+      "cooldown": 1.2,
+      "animation": "heavy_attack"
+    },
+    "magic_attack": {
+      "name": "Lightning Strike",
+      "damage": 25,
+      "mana_cost": 25,
+      "cooldown": 0.8,
+      "animation": "magic_attack"
+    },
+    "ultimate": {
+      "name": "Meteor Storm",
+      "damage": 90,
+      "animation": "ultimate"
+    }
+  },
+  "weapon": {
+    "name": "Staff",
+    "type": "staff",
+    "sprite": "res://assets/sprites/weapons/staff.png"
+  },
+  "armor": {
+    "name": "Mage Robes",
+    "defense_bonus": 0.8,
+    "sprite": "res://assets/sprites/armor/mage_robes.png"
+  },
+  "voice_pack": "res://assets/audio/voices/mage_male/",
+  "ultimate_vfx": "res://assets/particles/ultimate_mage.tscn"
+}

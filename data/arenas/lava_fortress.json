@@ -1,0 +1,35 @@
+{
+  "name": "Lava Fortress",
+  "description": "A volcanic stronghold with rivers of molten lava",
+  "background_path": "res://assets/sprites/arenas/lava_fortress_bg.png",
+  "parallax_layers": [
+    {
+      "path": "res://assets/sprites/arenas/lava_fortress_bg_far.png",
+      "speed": 0.3
+    },
+    {
+      "path": "res://assets/sprites/arenas/lava_fortress_bg_mid.png",
+      "speed": 0.6
+    },
+    {
+      "path": "res://assets/sprites/arenas/lava_fortress_bg_near.png",
+      "speed": 0.9
+    }
+  ],
+  "floor_height": 800,
+  "arena_width": 1920,
+  "lighting": {
+    "ambient_color": "#FF6B35",
+    "ambient_intensity": 0.85
+  },
+  "particles": {
+    "dust_particles": "res://assets/particles/lava_embers.tscn",
+    "enabled": true
+  },
+  "music": "res://assets/audio/music/lava_fortress.ogg",
+  "ambient_sounds": [
+    "res://assets/audio/ambient/lava_bubble.ogg",
+    "res://assets/audio/ambient/lava_crackle.ogg"
+  ],
+  "difficulty": "hard"
+}

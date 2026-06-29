@@ -1,0 +1,56 @@
+{
+  "name": "Assassin Female",
+  "class": "Assassin",
+  "gender": "Female",
+  "sprite_path": "res://assets/sprites/assassins/female_assassin.png",
+  "stats": {
+    "max_health": 80,
+    "max_mana": 100,
+    "move_speed": 250,
+    "dash_speed": 570,
+    "jump_force": 430,
+    "attack_damage": 11,
+    "heavy_attack_damage": 20,
+    "magic_damage": 20,
+    "crit_chance": 0.28,
+    "crit_multiplier": 1.9
+  },
+  "abilities": {
+    "quick_attack": {
+      "name": "Quick Cut",
+      "damage": 11,
+      "cooldown": 0.38,
+      "animation": "quick_attack"
+    },
+    "heavy_attack": {
+      "name": "Whirlwind",
+      "damage": 20,
+      "cooldown": 0.8,
+      "animation": "heavy_attack"
+    },
+    "magic_attack": {
+      "name": "Shadow Clone",
+      "damage": 20,
+      "mana_cost": 18,
+      "cooldown": 0.55,
+      "animation": "magic_attack"
+    },
+    "ultimate": {
+      "name": "Thousand Cuts",
+      "damage": 70,
+      "animation": "ultimate"
+    }
+  },
+  "weapon": {
+    "name": "Twin Daggers",
+    "type": "dagger",
+    "sprite": "res://assets/sprites/weapons/twin_daggers.png"
+  },
+  "armor": {
+    "name": "Leather Armor",
+    "defense_bonus": 0.9,
+    "sprite": "res://assets/sprites/armor/assassin_armor_female.png"
+  },
+  "voice_pack": "res://assets/audio/voices/assassin_female/",
+  "ultimate_vfx": "res://assets/particles/ultimate_assassin_female.tscn"
+}
