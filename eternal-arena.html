@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eternal Arena - Fighting Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        #gameContainer {
+            width: 90%;
+            max-width: 1000px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 3px solid #ffd700;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .screen {
+            display: none;
+            text-align: center;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h1 {
+            font-size: 4em;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+            margin-bottom: 40px;
+            letter-spacing: 3px;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            color: #ffd700;
+            margin-bottom: 30px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #000;
+            border: 2px solid #ff6b6b;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            min-width: 150px;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #ffd700;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button.selected {
+            background: #ff6b6b;
+            color: #fff;
+            box-shadow: 0 0 20px #ff6b6b;
+        }
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .character-card, .arena-card {
+            padding: 20px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .character-card:hover, .arena-card:hover {
+            background: rgba(255, 215, 0, 0.3);
+            transform: scale(1.05);
+        }
+
+        .character-card.selected, .arena-card.selected {
+            background: rgba(255, 107, 107, 0.5);
+            border-color: #ff6b6b;
+            box-shadow: 0 0 15px #ff6b6b;
+        }
+
+        .battle-screen {
+            background: linear-gradient(180deg, #1a3a52 0%, #0f2438 100%);
+            border-radius: 10px;
+            padding: 30px;
+        }
+
+        .battle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .player-info, .opponent-info {
+            flex: 1;
+        }
+
+        .player-info h3, .opponent-info h3 {
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .timer {
+            font-size: 2em;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .health-bar {
+            width: 100%;
+            height: 20px;
+            background: #333;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #ffff00);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .arena {
+            background: linear-gradient(180deg, #2c5282 0%, #1a3a52 100%);
+            border: 3px solid #ffd700;
+            border-radius: 8px;
+            padding: 60px 20px;
+            margin: 30px 0;
+            min-height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .arena::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 215, 0, 0.05) 10px,
+                rgba(255, 215, 0, 0.05) 20px
+            );
+            pointer-events: none;
+        }
+
+        .fighter {
+            display: inline-block;
+            width: 80px;
+            height: 100px;
+            background: linear-gradient(135deg, #ff6b6b, #ff8787);
+            border: 2px solid #fff;
+            border-radius: 5px;
+            vertical-align: middle;
+            position: relative;
+            z-index: 1;
+        }
+
+        .player-fighter {
+            animation: playerFloat 3s ease-in-out infinite;
+        }
+
+        .opponent-fighter {
+            animation: opponentFloat 3s ease-in-out infinite;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        @keyframes playerFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes opponentFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .controls {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 8px;
+        }
+
+        .controls h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .control-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 10px 0;
+        }
+
+        .control-item {
+            text-align: left;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .key {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .status-message {
+            font-size: 1.5em;
+            color: #ffd700;
+            margin: 20px 0;
+            min-height: 30px;
+        }
+
+        .damage-popup {
+            position: absolute;
+            font-weight: bold;
+            color: #ff6b6b;
+            animation: popupFloat 1s forwards;
+            z-index: 10;
+        }
+
+        @keyframes popupFloat {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-50px); }
+        }
+
+        .difficulty-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .combo-counter {
+            font-size: 1.2em;
+            color: #ffff00;
+            margin: 10px 0;
+        }
+
+        .ultimate-bar {
+            width: 100%;
+            height: 15px;
+            background: #333;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .ultimate-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffd700);
+            transition: width 0.3s;
+        }
+
+        .info-text {
+            color: #ccc;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <!-- Main Menu Screen -->
+        <div id="mainMenu" class="screen active">
+            <h1>⚔️ ETERNAL ARENA ⚔️</h1>
+            <p style="font-size: 1.2em; color: #ffd700; margin: 20px 0;">A Fantasy Fighting Game</p>
+            <div class="button-container">
+                <button onclick="showScreen('characterSelect')">▶ PLAY</button>
+                <button onclick="showScreen('instructions')">? HOW TO PLAY</button>
+            </div>
+            <p style="color: #999; margin-top: 40px;">Fight your way to glory in the Eternal Arena!</p>
+        </div>
+
+        <!-- Instructions Screen -->
+        <div id="instructions" class="screen">
+            <h2>HOW TO PLAY</h2>
+            <div style="text-align: left; max-width: 600px; margin: 30px auto;">
+                <h3 style="color: #ffd700; margin-top: 20px;">🎮 CONTROLS</h3>
+                <div class="control-row">
+                    <div class="control-item"><span class="key">A</span> - Move Left</div>
+                    <div class="control-item"><span class="key">D</span> - Move Right</div>
+                    <div class="control-item"><span class="key">J</span> - Quick Attack</div>
+                    <div class="control-item"><span class="key">K</span> - Heavy Attack</div>
+                    <div class="control-item"><span class="key">L</span> - Magic Attack</div>
+                    <div class="control-item"><span class="key">F</span> - Ultimate (When Charged)</div>
+                </div>
+
+                <h3 style="color: #ffd700; margin-top: 20px;">⚡ GAME OBJECTIVE</h3>
+                <p>Defeat your opponent by reducing their health to zero within 5 minutes!</p>
+
+                <h3 style="color: #ffd700; margin-top: 20px;">📊 CHARACTER CLASSES</h3>
+                <p><strong style="color: #ff6b6b;">Knights:</strong> High health, balanced damage</p>
+                <p><strong style="color: #4facfe;">Assassins:</strong> Fast, high critical hits</p>
+                <p><strong style="color: #ffff00;">Mages:</strong> High magic damage, low health</p>
+
+                <h3 style="color: #ffd700; margin-top: 20px;">💡 TIPS</h3>
+                <p>• Build your Ultimate meter by attacking</p>
+                <p>• Combo attacks deal more damage</p>
+                <p>• Each character has unique abilities</p>
+                <p>• Higher difficulty = stronger opponent</p>
+            </div>
+            <button onclick="showScreen('mainMenu')" style="margin-top: 30px;">← BACK</button>
+        </div>
+
+        <!-- Character Selection Screen -->
+        <div id="characterSelect" class="screen">
+            <h2>SELECT YOUR CHARACTER</h2>
+            <div class="character-grid">
+                <div class="character-card" onclick="selectCharacter('knight_male', this)">
+                    <h4>⚔️ KNIGHT MALE</h4>
+                    <p class="info-text">HP: 120 | DMG: 15</p>
+                    <p class="info-text">Balanced Fighter</p>
+                </div>
+                <div class="character-card" onclick="selectCharacter('knight_female', this)">
+                    <h4>⚔️ KNIGHT FEMALE</h4>
+                    <p class="info-text">HP: 110 | DMG: 14</p>
+                    <p class="info-text">Swift Strikes</p>
+                </div>
+                <div class="character-card" onclick="selectCharacter('assassin_male', this)">
+                    <h4>🗡️ ASSASSIN MALE</h4>
+                    <p class="info-text">HP: 85 | CRIT: 25%</p>
+                    <p class="info-text">High Damage Output</p>
+                </div>
+                <div class="character-card" onclick="selectCharacter('assassin_female', this)">
+                    <h4>🗡️ ASSASSIN FEMALE</h4>
+                    <p class="info-text">HP: 80 | CRIT: 28%</p>
+                    <p class="info-text">Fastest Fighter</p>
+                </div>
+                <div class="character-card" onclick="selectCharacter('mage_male', this)">
+                    <h4>✨ MAGE MALE</h4>
+                    <p class="info-text">HP: 75 | MAGIC: 25</p>
+                    <p class="info-text">Ranged Spellcaster</p>
+                </div>
+                <div class="character-card" onclick="selectCharacter('mage_female', this)">
+                    <h4>✨ MAGE FEMALE</h4>
+                    <p class="info-text">HP: 70 | MAGIC: 28</p>
+                    <p class="info-text">Powerful Mage</p>
+                </div>
+            </div>
+            <div class="button-container">
+                <button onclick="showScreen('mainMenu')">← BACK</button>
+                <button id="confirmCharBtn" onclick="showScreen('arenaSelect')" style="opacity: 0.5;" disabled>CONFIRM →</button>
+            </div>
+        </div>
+
+        <!-- Arena Selection Screen -->
+        <div id="arenaSelect" class="screen">
+            <h2>SELECT ARENA</h2>
+            <div class="character-grid">
+                <div class="arena-card" onclick="selectArena('ancient_temple', this)">
+                    <h4>🏛️ ANCIENT TEMPLE</h4>
+                    <p class="info-text">Normal Difficulty</p>
+                </div>
+                <div class="arena-card" onclick="selectArena('frozen_kingdom', this)">
+                    <h4>❄️ FROZEN KINGDOM</h4>
+                    <p class="info-text">Easy Difficulty</p>
+                </div>
+                <div class="arena-card" onclick="selectArena('forest_ruins', this)">
+                    <h4>🌲 FOREST RUINS</h4>
+                    <p class="info-text">Normal Difficulty</p>
+                </div>
+                <div class="arena-card" onclick="selectArena('lava_fortress', this)">
+                    <h4>🔥 LAVA FORTRESS</h4>
+                    <p class="info-text">Hard Difficulty</p>
+                </div>
+                <div class="arena-card" onclick="selectArena('celestial_arena', this)">
+                    <h4>⭐ CELESTIAL ARENA</h4>
+                    <p class="info-text">Hard Difficulty</p>
+                </div>
+            </div>
+
+            <h3 style="color: #ffd700; margin-top: 30px;">SELECT DIFFICULTY</h3>
+            <div class="difficulty-buttons">
+                <button onclick="selectDifficulty(0, this)">EASY</button>
+                <button onclick="selectDifficulty(1, this)" class="selected">NORMAL</button>
+                <button onclick="selectDifficulty(2, this)">HARD</button>
+            </div>
+
+            <div class="button-container">
+                <button onclick="showScreen('characterSelect')">← BACK</button>
+                <button id="startBattleBtn" onclick="startBattle()" style="opacity: 0.5;" disabled>START BATTLE →</button>
+            </div>
+        </div>
+
+        <!-- Battle Screen -->
+        <div id="battleScreen" class="screen">
+            <div class="battle-screen">
+                <div class="battle-header">
+                    <div class="player-info">
+                        <h3 id="playerName">You</h3>
+                        <div class="health-bar">
+                            <div id="playerHealthFill" class="health-fill" style="width: 100%;">100%</div>
+                        </div>
+                        <div class="combo-counter" id="playerCombo"></div>
+                        <div class="ultimate-bar">
+                            <div id="playerUltimate" class="ultimate-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="timer" id="timer">5:00</div>
+
+                    <div class="opponent-info">
+                        <h3 id="opponentName">Opponent</h3>
+                        <div class="health-bar">
+                            <div id="opponentHealthFill" class="health-fill" style="width: 100%;">100%</div>
+                        </div>
+                        <div class="combo-counter" id="opponentCombo"></div>
+                        <div class="ultimate-bar">
+                            <div id="opponentUltimate" class="ultimate-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-message" id="statusMessage"></div>
+
+                <div class="arena" id="arenaDisplay">
+                    <div class="fighter player-fighter">
+                        <div style="text-align: center; padding-top: 35px; font-size: 2em;">👨</div>
+                    </div>
+                    <div style="display: inline-block; width: 200px;"></div>
+                    <div class="fighter opponent-fighter">
+                        <div style="text-align: center; padding-top: 35px; font-size: 2em;">🧙</div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <h3>⌨️ BATTLE CONTROLS</h3>
+                    <div class="control-row">
+                        <div class="control-item"><span class="key">A</span> - Move Left</div>
+                        <div class="control-item"><span class="key">D</span> - Move Right</div>
+                        <div class="control-item"><span class="key">J</span> - Quick Attack</div>
+                        <div class="control-item"><span class="key">K</span> - Heavy Attack</div>
+                        <div class="control-item"><span class="key">L</span> - Magic Attack</div>
+                        <div class="control-item"><span class="key">F</span> - ULTIMATE</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Victory Screen -->
+        <div id="victoryScreen" class="screen">
+            <h1 style="color: #00ff00; text-shadow: 0 0 10px #00ff00;">🏆 VICTORY! 🏆</h1>
+            <h2 style="color: #00ff00; margin: 30px 0;">You Defeated Your Opponent!</h2>
+            <div style="font-size: 1.5em; margin: 30px 0;">
+                <p style="color: #ffd700; margin: 10px 0;">⭐ REWARDS ⭐</p>
+                <p style="color: #ffff00; margin: 10px 0;">Gold: +100</p>
+                <p style="color: #ffff00; margin: 10px 0;">Experience: +50</p>
+                <p id="difficultyBonus" style="color: #ff6b6b; margin: 10px 0;"></p>
+            </div>
+            <div class="button-container">
+                <button onclick="showScreen('mainMenu')">← MAIN MENU</button>
+                <button onclick="showScreen('arenaSelect')">🔄 FIGHT AGAIN</button>
+            </div>
+        </div>
+
+        <!-- Defeat Screen -->
+        <div id="defeatScreen" class="screen">
+            <h1 style="color: #ff6b6b; text-shadow: 0 0 10px #ff6b6b;">💀 DEFEAT 💀</h1>
+            <h2 style="color: #ff6b6b; margin: 30px 0;">You Were Defeated!</h2>
+            <p style="font-size: 1.2em; color: #999; margin: 30px 0;">Better luck next time, warrior!</p>
+            <div class="button-container">
+                <button onclick="showScreen('mainMenu')">← MAIN MENU</button>
+                <button onclick="showScreen('arenaSelect')">🔄 TRY AGAIN</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            selectedCharacter: null,
+            selectedArena: null,
+            selectedDifficulty: 1,
+            playerHealth: 100,
+            opponentHealth: 100,
+            playerMaxHealth: 100,
+            opponentMaxHealth: 100,
+            playerCombo: 0,
+            opponentCombo: 0,
+            playerUltimate: 0,
+            opponentUltimate: 0,
+            timeRemaining: 300,
+            gameActive: false,
+            battleStarted: false
+        };
+
+        const characterStats = {
+            knight_male: { name: 'Knight Male', health: 120, damage: 15, heavy: 28, magic: 10, crit: 0.08 },
+            knight_female: { name: 'Knight Female', health: 110, damage: 14, heavy: 26, magic: 12, crit: 0.12 },
+            assassin_male: { name: 'Assassin Male', health: 85, damage: 12, heavy: 22, magic: 18, crit: 0.25 },
+            assassin_female: { name: 'Assassin Female', health: 80, damage: 11, heavy: 20, magic: 20, crit: 0.28 },
+            mage_male: { name: 'Mage Male', health: 75, damage: 8, heavy: 16, magic: 25, crit: 0.15 },
+            mage_female: { name: 'Mage Female', health: 70, damage: 7, heavy: 14, magic: 28, crit: 0.18 }
+        };
+
+        const arenaNames = {
+            ancient_temple: 'Ancient Temple',
+            frozen_kingdom: 'Frozen Kingdom',
+            forest_ruins: 'Forest Ruins',
+            lava_fortress: 'Lava Fortress',
+            celestial_arena: 'Celestial Arena'
+        };
+
+        // UI Functions
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function selectCharacter(char, element) {
+            document.querySelectorAll('.character-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            gameState.selectedCharacter = char;
+            document.getElementById('confirmCharBtn').disabled = false;
+            document.getElementById('confirmCharBtn').style.opacity = '1';
+        }
+
+        function selectArena(arena, element) {
+            document.querySelectorAll('.arena-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            gameState.selectedArena = arena;
+            updateStartButton();
+        }
+
+        function selectDifficulty(level, element) {
+            document.querySelectorAll('.difficulty-buttons button').forEach(btn => btn.classList.remove('selected'));
+            element.classList.add('selected');
+            gameState.selectedDifficulty = level;
+            updateStartButton();
+        }
+
+        function updateStartButton() {
+            const btn = document.getElementById('startBattleBtn');
+            if (gameState.selectedArena) {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
+        }
+
+        function startBattle() {
+            if (!gameState.selectedCharacter || !gameState.selectedArena) return;
+
+            const stats = characterStats[gameState.selectedCharacter];
+            gameState.playerHealth = stats.health;
+            gameState.opponentHealth = stats.health;
+            gameState.playerMaxHealth = stats.health;
+            gameState.opponentMaxHealth = stats.health;
+            gameState.playerCombo = 0;
+            gameState.opponentCombo = 0;
+            gameState.playerUltimate = 0;
+            gameState.opponentUltimate = 0;
+            gameState.timeRemaining = 300;
+            gameState.gameActive = true;
+            gameState.battleStarted = true;
+
+            document.getElementById('playerName').textContent = stats.name;
+            document.getElementById('opponentName').textContent = selectRandomOpponent();
+            
+            showScreen('battleScreen');
+            updateBattleUI();
+            startBattleTimer();
+            startAIBattle();
+        }
+
+        function selectRandomOpponent() {
+            const opponents = Object.keys(characterStats);
+            return characterStats[opponents[Math.floor(Math.random() * opponents.length)]].name;
+        }
+
+        function startBattleTimer() {
+            const timerInterval = setInterval(() => {
+                if (!gameState.gameActive) {
+                    clearInterval(timerInterval);
+                    return;
+                }
+
+                gameState.timeRemaining--;
+                const minutes = Math.floor(gameState.timeRemaining / 60);
+                const seconds = gameState.timeRemaining % 60;
+                document.getElementById('timer').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                if (gameState.timeRemaining <= 0) {
+                    endBattle('timeout');
+                    clearInterval(timerInterval);
+                }
+            }, 1000);
+        }
+
+        function startAIBattle() {
+            setInterval(() => {
+                if (!gameState.gameActive) return;
+
+                const aiChoice = Math.random();
+                if (aiChoice < 0.3) {
+                    opponentAttack('quick');
+                } else if (aiChoice < 0.6) {
+                    opponentAttack('heavy');
+                } else {
+                    opponentAttack('magic');
+                }
+            }, 2000 + Math.random() * 1000);
+
+            // Keyboard controls for player
+            document.addEventListener('keydown', (e) => {
+                if (!gameState.gameActive) return;
+
+                switch(e.key.toLowerCase()) {
+                    case 'j': playerAttack('quick'); break;
+                    case 'k': playerAttack('heavy'); break;
+                    case 'l': playerAttack('magic'); break;
+                    case 'f': playerUltimate(); break;
+                }
+            });
+        }
+
+        function playerAttack(type) {
+            if (!gameState.gameActive) return;
+
+            let damage = characterStats[gameState.selectedCharacter].damage;
+            if (type === 'heavy') damage = characterStats[gameState.selectedCharacter].heavy;
+            if (type === 'magic') damage = characterStats[gameState.selectedCharacter].magic;
+
+            // Critical hit
+            if (Math.random() < characterStats[gameState.selectedCharacter].crit) {
+                damage *= 1.5;
+            }
+
+            // Combo bonus
+            gameState.playerCombo++;
+            damage *= (1 + gameState.playerCombo * 0.1);
+
+            gameState.opponentHealth -= damage;
+            gameState.playerUltimate += type === 'magic' ? 15 : 10;
+
+            if (gameState.opponentHealth < 0) gameState.opponentHealth = 0;
+            if (gameState.playerUltimate > 100) gameState.playerUltimate = 100;
+
+            document.getElementById('statusMessage').textContent = `You used ${type} attack! Damage: ${damage.toFixed(0)}`;
+            updateBattleUI();
+
+            if (gameState.opponentHealth <= 0) {
+                endBattle('victory');
+            }
+
+            setTimeout(() => document.getElementById('statusMessage').textContent = '', 1500);
+        }
+
+        function opponentAttack(type) {
+            if (!gameState.gameActive) return;
+
+            let damage = 10 + gameState.selectedDifficulty * 5;
+            if (type === 'heavy') damage *= 1.8;
+            if (type === 'magic') damage *= 1.2;
+
+            gameState.playerHealth -= damage;
+            gameState.opponentUltimate += type === 'magic' ? 15 : 10;
+
+            if (gameState.playerHealth < 0) gameState.playerHealth = 0;
+            if (gameState.opponentUltimate > 100) gameState.opponentUltimate = 100;
+
+            document.getElementById('statusMessage').textContent = `Opponent used ${type} attack! Damage: ${damage.toFixed(0)}`;
+            updateBattleUI();
+
+            if (gameState.playerHealth <= 0) {
+                endBattle('defeat');
+            }
+
+            setTimeout(() => document.getElementById('statusMessage').textContent = '', 1500);
+        }
+
+        function playerUltimate() {
+            if (gameState.playerUltimate < 100 || !gameState.gameActive) return;
+
+            const damage = characterStats[gameState.selectedCharacter].heavy * 3;
+            gameState.opponentHealth -= damage;
+            gameState.playerUltimate = 0;
+
+            if (gameState.opponentHealth < 0) gameState.opponentHealth = 0;
+
+            document.getElementById('statusMessage').textContent = `⚡ ULTIMATE ATTACK! Damage: ${damage.toFixed(0)} ⚡`;
+            updateBattleUI();
+
+            if (gameState.opponentHealth <= 0) {
+                endBattle('victory');
+            }
+
+            setTimeout(() => document.getElementById('statusMessage').textContent = '', 1500);
+        }
+
+        function updateBattleUI() {
+            const playerPercent = (gameState.playerHealth / gameState.playerMaxHealth) * 100;
+            const opponentPercent = (gameState.opponentHealth / gameState.opponentMaxHealth) * 100;
+
+            document.getElementById('playerHealthFill').style.width = playerPercent + '%';
+            document.getElementById('playerHealthFill').textContent = playerPercent.toFixed(0) + '%';
+
+            document.getElementById('opponentHealthFill').style.width = opponentPercent + '%';
+            document.getElementById('opponentHealthFill').textContent = opponentPercent.toFixed(0) + '%';
+
+            document.getElementById('playerUltimate').style.width = gameState.playerUltimate + '%';
+            document.getElementById('opponentUltimate').style.width = gameState.opponentUltimate + '%';
+
+            if (gameState.playerCombo > 0) {
+                document.getElementById('playerCombo').textContent = `Combo: x${gameState.playerCombo}`;
+            } else {
+                document.getElementById('playerCombo').textContent = '';
+            }
+
+            if (gameState.opponentCombo > 0) {
+                document.getElementById('opponentCombo').textContent = `Combo: x${gameState.opponentCombo}`;
+            } else {
+                document.getElementById('opponentCombo').textContent = '';
+            }
+        }
+
+        function endBattle(result) {
+            gameState.gameActive = false;
+
+            if (result === 'victory') {
+                const bonus = gameState.selectedDifficulty === 0 ? 50 : gameState.selectedDifficulty === 1 ? 100 : 150;
+                document.getElementById('difficultyBonus').textContent = `Difficulty Bonus: +${bonus}`;
+                showScreen('victoryScreen');
+            } else if (result === 'defeat') {
+                showScreen('defeatScreen');
+            } else if (result === 'timeout') {
+                if (gameState.playerHealth > gameState.opponentHealth) {
+                    showScreen('victoryScreen');
+                } else {
+                    showScreen('defeatScreen');
+                }
+            }
+        }
+
+        // Initialize
+        document.getElementById('mainMenu').classList.add('active');
+        document.addEventListener('selectDifficulty', (e) => {
+            document.querySelectorAll('.difficulty-buttons button').forEach(btn => btn.classList.remove('selected'));
+            e.target.classList.add('selected');
+        });
+    </script>
+</body>
+</html>
