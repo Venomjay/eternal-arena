@@ -1,0 +1,35 @@
+{
+  "name": "Ancient Temple",
+  "description": "A mystical temple shrouded in ancient magic",
+  "background_path": "res://assets/sprites/arenas/ancient_temple_bg.png",
+  "parallax_layers": [
+    {
+      "path": "res://assets/sprites/arenas/ancient_temple_bg_far.png",
+      "speed": 0.3
+    },
+    {
+      "path": "res://assets/sprites/arenas/ancient_temple_bg_mid.png",
+      "speed": 0.6
+    },
+    {
+      "path": "res://assets/sprites/arenas/ancient_temple_bg_near.png",
+      "speed": 0.9
+    }
+  ],
+  "floor_height": 800,
+  "arena_width": 1920,
+  "lighting": {
+    "ambient_color": "#8B7355",
+    "ambient_intensity": 0.7
+  },
+  "particles": {
+    "dust_particles": "res://assets/particles/temple_dust.tscn",
+    "enabled": true
+  },
+  "music": "res://assets/audio/music/ancient_temple.ogg",
+  "ambient_sounds": [
+    "res://assets/audio/ambient/temple_wind.ogg",
+    "res://assets/audio/ambient/temple_chime.ogg"
+  ],
+  "difficulty": "normal"
+}
